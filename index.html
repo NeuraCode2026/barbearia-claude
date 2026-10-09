@@ -1,0 +1,542 @@
+<title>Nova Era Barber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: barbearia escura com detalhes em dourado. Coluna principal (hero, serviços, trabalhos) + coluna lateral de contato. Vitrine única, sempre escura. */
+:root {
+  --bg: oklch(0.12 0.004 70);
+  --fg: oklch(0.96 0.007 82);
+  --card: oklch(0.17 0.005 70);
+  --popover: oklch(0.20 0.005 70);
+  --gold: oklch(0.77 0.119 69);
+  --gold-ink: oklch(0.14 0.01 70);
+  --gold-hi: oklch(0.95 0.09 85);
+  --secondary: oklch(0.23 0.006 70);
+  --muted: oklch(0.66 0.008 75);
+  --line: oklch(0.28 0.006 70);
+  --danger: oklch(0.63 0.2 28);
+  --wa: #25d366;
+  --wa-dark: #1fbe5f;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --radius: 0.25rem;
+  color-scheme: dark;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+* { box-sizing: border-box; border-color: var(--line); }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin: 0; }
+button, input, select { font: inherit; color: inherit; }
+::selection { background: var(--gold); color: var(--gold-ink); }
+svg { display: block; flex-shrink: 0; }
+.ico { width: 1em; height: 1em; }
+
+.wrap { max-width: 1280px; margin-inline: auto; padding-inline: 20px; }
+@media (min-width: 768px) { .wrap { padding-inline: 40px; } }
+
+.display { font-family: var(--font-display); text-transform: uppercase; font-weight: 600; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+.muted { color: var(--muted); }
+
+.shimmer {
+  background: linear-gradient(100deg, var(--gold) 30%, var(--gold-hi) 50%, var(--gold) 70%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: shimmer 4.5s ease-in-out infinite;
+}
+@keyframes shimmer { 0%, 100% { background-position: 220% 0; } 50% { background-position: 0 0; } }
+
+/* Botões com efeito: elevação, brilho deslizante, clique e foco */
+.btn {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px; padding: 0 20px; border-radius: var(--radius);
+  border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+  font-size: 14px; font-weight: 500;
+  transition: translate 250ms ease, scale 250ms ease, box-shadow 250ms ease, background-color 250ms ease, color 250ms ease, border-color 250ms ease;
+}
+.btn::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(110deg, transparent 20%, oklch(0.965 0.008 80 / 28%) 50%, transparent 80%);
+  transform: translateX(-130%);
+}
+.btn-gold { background: linear-gradient(135deg, var(--gold), oklch(0.7 0.13 62)); color: var(--gold-ink); box-shadow: 0 2px 8px -2px oklch(0 0 0 / 50%); }
+.btn-outline { border-color: oklch(0.77 0.119 69 / 50%); color: var(--gold); background: transparent; }
+.btn-outline:hover { background: var(--gold); color: var(--gold-ink); }
+.btn-wa { background: var(--wa); color: #fff; }
+.btn-wa:hover { background: var(--wa-dark); }
+.btn-ghost { background: transparent; }
+.btn-ghost:hover { background: var(--secondary); }
+.btn-sm { height: 34px; padding: 0 14px; font-size: 12px; }
+.btn-icon { width: 40px; padding: 0; height: 40px; }
+.btn-block { width: 100%; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; background: var(--secondary); color: var(--muted); box-shadow: none; }
+.btn:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .btn:not(:disabled):hover { translate: 0 -2px; box-shadow: 0 8px 18px -6px oklch(0 0 0 / 65%); }
+  .btn:not(:disabled):hover::before { animation: sweep 550ms ease forwards; }
+}
+.btn:not(:disabled):active { translate: 0 0; scale: 0.97; }
+@keyframes sweep { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
+
+/* Cabeçalho */
+header.top { border-bottom: 1px solid var(--line); }
+.top-row { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand-mark { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--gold); color: var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.brand-name { font-size: 24px; letter-spacing: 0.04em; line-height: 1; white-space: nowrap; }
+.nav { display: none; align-items: center; gap: 36px; font-size: 14px; color: var(--muted); }
+.nav a { transition: color 200ms; }
+.nav a:hover { color: var(--fg); }
+.top-cta { display: none; }
+.burger { display: inline-flex; }
+@media (min-width: 768px) { .nav { display: flex; } .top-cta { display: block; } .burger { display: none; } }
+.mnav { display: none; flex-direction: column; border-top: 1px solid var(--line); background: var(--card); padding: 8px 20px; }
+.mnav.open { display: flex; }
+.mnav a { padding: 12px 0; font-size: 14px; }
+@media (min-width: 768px) { .mnav { display: none !important; } }
+
+/* Grade principal */
+main { padding-block: 36px 80px; }
+.grid { display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) { .grid { grid-template-columns: minmax(0, 1fr) 320px; gap: 48px; padding-top: 20px; } }
+
+.hero-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+.hero-id { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.hero-badge { width: 64px; height: 64px; border-radius: 50%; border: 1px solid oklch(0.77 0.119 69 / 60%); background: var(--card); color: var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+@media (min-width: 768px) { .hero-badge { width: 80px; height: 80px; } }
+.hero-badge svg { width: 32px; height: 32px; }
+h1.display { font-size: 40px; line-height: 1; font-weight: 600; }
+@media (min-width: 768px) { h1.display { font-size: 52px; } }
+.mask { display: inline-block; overflow: hidden; vertical-align: bottom; }
+.word { display: inline-block; animation: word-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: var(--d, 0s); }
+@keyframes word-in { from { transform: translateY(110%); } to { transform: translateY(0); } }
+.hero-cta { width: 100%; }
+@media (min-width: 640px) { .hero-cta { width: auto; } }
+
+/* Fotos: espaços reservados para as imagens do projeto */
+.ph { position: relative; overflow: hidden; background: var(--bg-ph, var(--secondary)); display: flex; align-items: center; justify-content: center; color: oklch(0.77 0.119 69 / 55%); }
+.ph svg { width: 34px; height: 34px; }
+.ph::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 20% 10%, oklch(1 0 0 / 7%), transparent 60%); }
+.ph-tag { position: absolute; left: 10px; top: 10px; z-index: 1; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: oklch(0.96 0.007 82 / 55%); }
+.mosaic { display: grid; grid-template-columns: 1.45fr 1fr; gap: 8px; height: 340px; border-radius: 6px; overflow: hidden; }
+@media (min-width: 640px) { .mosaic { height: 420px; } }
+@media (min-width: 768px) { .mosaic { gap: 12px; } }
+.mosaic .col { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; min-height: 0; }
+@media (min-width: 768px) { .mosaic .col { gap: 12px; } }
+
+.tabs { margin-top: 20px; display: flex; align-items: center; gap: 28px; overflow-x: auto; border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 500; white-space: nowrap; }
+.tabs a { padding-bottom: 16px; color: var(--muted); transition: color 200ms; }
+.tabs a:hover { color: var(--fg); }
+.tabs a.on { color: var(--gold); border-bottom: 2px solid var(--gold); }
+
+section.blk { scroll-margin-top: 32px; }
+#sobre { padding-block: 40px; border-bottom: 1px solid var(--line); }
+#sobre h2 { font-size: 34px; line-height: 1.05; margin-top: 12px; text-wrap: balance; }
+@media (min-width: 768px) { #sobre h2 { font-size: 40px; } }
+#sobre p.lead { margin-top: 16px; max-width: 36rem; font-size: 14px; line-height: 1.8; color: var(--muted); }
+.sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+.sec-head h2 { font-size: 40px; line-height: 1.1; margin-top: 8px; }
+.sec-head .side { display: none; font-size: 14px; color: var(--muted); }
+@media (min-width: 640px) { .sec-head .side { display: block; } }
+
+#servicos { padding-top: 40px; }
+.filters { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+@media (min-width: 640px) { .filters { flex-direction: row; } }
+.search { flex: 1; min-width: 0; height: 44px; display: flex; align-items: center; gap: 12px; padding-inline: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); color: var(--muted); }
+.search input { width: 100%; min-width: 0; background: transparent; border: 0; outline: none; font-size: 14px; color: var(--fg); }
+.search input::placeholder { color: var(--muted); }
+.search:focus-within { border-color: var(--gold); }
+.sel { height: 44px; padding-inline: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); font-size: 14px; }
+.sel:focus { border-color: var(--gold); outline: none; }
+
+.svc-list { border-block: 1px solid var(--line); }
+.svc { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+.svc:last-child { border-bottom: 0; }
+@media (min-width: 640px) { .svc { flex-wrap: nowrap; gap: 20px; } }
+.svc-n { width: 56px; height: 56px; border-radius: var(--radius); background: var(--secondary); color: var(--gold); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 22px; flex-shrink: 0; }
+.svc-t { flex: 1; min-width: 0; }
+.svc-t h3 { font-size: 16px; font-weight: 600; }
+.svc-t p { margin-top: 4px; font-size: 12px; color: var(--muted); }
+.svc-r { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-left: 72px; }
+@media (min-width: 640px) { .svc-r { width: auto; flex-direction: column; align-items: flex-end; padding-left: 0; } }
+.dur { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+.empty { padding-block: 40px; text-align: center; font-size: 14px; color: var(--muted); }
+.fine { margin-top: 16px; font-size: 12px; color: var(--muted); }
+
+#trabalhos { margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--line); }
+.gal { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 640px) { .gal { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.gal figure { margin: 0; position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); }
+.gal .ph { aspect-ratio: 3 / 4; max-width: 100%; transition: scale 500ms ease; }
+.gal figure:hover .ph { scale: 1.05; }
+.gal figcaption { position: absolute; inset-inline: 0; bottom: 0; padding: 32px 12px 10px; background: linear-gradient(to top, oklch(0.12 0.004 70 / 92%), transparent); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.insta { margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--gold); }
+
+/* Lateral */
+.side-card { border: 1px solid var(--line); background: var(--card); padding: 24px; }
+@media (min-width: 768px) { .side-card { padding: 28px; } }
+.info { padding-block: 28px; border-bottom: 1px solid var(--line); }
+.info:first-child { padding-top: 0; }
+.info:last-child { padding-bottom: 0; border-bottom: 0; }
+.info .chip { width: 40px; height: 40px; margin-bottom: 20px; border-radius: var(--radius); background: var(--secondary); color: var(--gold); display: flex; align-items: center; justify-content: center; }
+.info .chip svg { width: 19px; height: 19px; }
+.info h2 { font-size: 24px; line-height: 1.15; }
+.info p { margin-top: 12px; font-size: 14px; line-height: 1.7; color: var(--muted); }
+.info .btn { margin-top: 24px; }
+.quote { margin-top: 32px; padding-left: 20px; border-left: 2px solid var(--gold); }
+.quote p { font-family: var(--font-display); font-size: 24px; font-weight: 500; text-transform: uppercase; line-height: 1.2; }
+.quote svg { margin-top: 16px; width: 20px; height: 20px; color: var(--gold); }
+
+footer.bot { border-top: 1px solid var(--line); }
+.bot-row { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding-block: 32px; font-size: 14px; color: var(--muted); }
+@media (min-width: 768px) { .bot-row { flex-direction: row; } }
+.bot-row .display { font-size: 20px; color: var(--fg); }
+.bot-links { display: flex; flex-direction: column; gap: 8px; }
+@media (min-width: 640px) { .bot-links { flex-direction: row; align-items: center; gap: 20px; } }
+.bot-links a { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; transition: color 200ms; }
+.bot-links a:hover { color: var(--gold); }
+
+/* Botão flutuante animado */
+.fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 40; height: 52px; padding: 0 22px 0 18px; border-radius: 999px; font-weight: 600; font-size: 14px; box-shadow: 0 10px 28px -8px oklch(0 0 0 / 70%); }
+.fab::after { content: ""; position: absolute; inset: 0; border-radius: inherit; border: 2px solid var(--gold); opacity: 0; pointer-events: none; animation: pulse 2.6s ease-out infinite; }
+.fab .ico { width: 20px; height: 20px; transform-origin: 30% 70%; animation: snip 4.5s ease-in-out infinite; }
+@keyframes pulse { 0% { transform: scale(1); opacity: 0.7; } 70%, 100% { transform: scale(1.35, 1.7); opacity: 0; } }
+@keyframes snip { 0%, 70%, 100% { rotate: 0deg; } 76% { rotate: -14deg; } 82% { rotate: 12deg; } 88% { rotate: -8deg; } 94% { rotate: 0deg; } }
+.fab[hidden] { display: none !important; }
+@media (max-width: 520px) { .fab { width: 56px; height: 56px; padding: 0; } .fab span { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fab::after, .fab .ico, .shimmer, .word { animation: none; }
+  .btn, .btn:hover, .btn:active { transition: none; translate: none; scale: none; }
+  .btn::before { display: none; }
+  .gal .ph { transition: none; }
+}
+
+/* Modal de agendamento */
+.scrim { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-end; justify-content: center; background: oklch(0.12 0.004 70 / 82%); backdrop-filter: blur(4px); }
+.scrim[hidden] { display: none !important; }
+@media (min-width: 640px) { .scrim { align-items: center; padding: 16px; } }
+.dlg { width: 100%; max-width: 448px; max-height: 100%; overflow-y: auto; background: var(--popover); border: 1px solid var(--line); border-radius: 6px 6px 0 0; padding: 24px; box-shadow: 0 24px 60px -12px #000; }
+@media (min-width: 640px) { .dlg { border-radius: 6px; padding: 32px; } }
+.dlg-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.dlg-head h2 { font-size: 30px; line-height: 1.1; margin-top: 4px; }
+.dlg p.how { margin-bottom: 24px; font-size: 14px; line-height: 1.7; color: var(--muted); }
+.form { display: flex; flex-direction: column; gap: 16px; }
+.form label { display: block; font-size: 14px; font-weight: 500; }
+.form .sel, .form input[type="date"] { width: 100%; min-width: 0; margin-top: 8px; background: var(--card); }
+.form input[type="date"] { height: 44px; padding-inline: 12px; border: 1px solid var(--line); border-radius: var(--radius); font-size: 14px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sel:disabled { opacity: 0.5; }
+.err { margin-top: 16px; padding: 8px 12px; border: 1px solid oklch(0.63 0.2 28 / 50%); background: oklch(0.63 0.2 28 / 10%); border-radius: var(--radius); font-size: 12px; }
+.err[hidden] { display: none !important; }
+.done { margin-top: 20px; padding: 16px; border: 1px solid oklch(0.77 0.119 69 / 40%); border-radius: var(--radius); background: oklch(0.77 0.119 69 / 8%); font-size: 14px; line-height: 1.6; }
+.done[hidden] { display: none !important; }
+.done .btn { margin-top: 12px; }
+.demo { margin-top: 16px; font-size: 12px; color: var(--muted); }
+#confirm { margin-top: 28px; }
+
+/* Boas-vindas: 3 segundos ao abrir a página */
+.welcome { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px; text-align: center; background: var(--bg); cursor: pointer; animation: welcome-out 0.6s ease 2.4s forwards; }
+.welcome > * { opacity: 0; animation: welcome-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.welcome .w-mark { width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--gold); color: var(--gold); display: flex; align-items: center; justify-content: center; animation-delay: 0.1s; }
+.welcome .w-mark svg { width: 30px; height: 30px; }
+.welcome .w-hello { font-size: 12px; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--muted); animation-name: welcome-hello; animation-delay: 0.35s; }
+.welcome .w-name { font-size: clamp(34px, 9vw, 52px); line-height: 1; letter-spacing: 0.04em; animation-delay: 0.55s; }
+.welcome .w-bar { width: 120px; height: 2px; background: var(--secondary); overflow: hidden; animation-delay: 0.7s; }
+.welcome .w-bar::after { content: ""; display: block; height: 100%; background: var(--gold); transform: translateX(-100%); animation: welcome-bar 2.1s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards; }
+.welcome[hidden] { display: none !important; }
+@keyframes welcome-in { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes welcome-hello { from { opacity: 0; letter-spacing: 0.55em; } to { opacity: 1; letter-spacing: 0.35em; } }
+@keyframes welcome-bar { to { transform: translateX(0); } }
+@keyframes welcome-out { to { opacity: 0; visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { .welcome > *, .welcome .w-bar::after { animation: none; opacity: 1; transform: none; } .welcome .w-bar::after { transform: none; } }
+
+/* Crédito NeuraCode em lilás */
+.bot-links a.credit { --lilac: oklch(0.72 0.15 305); --lilac-hi: oklch(0.92 0.07 310); display: inline-block; background: linear-gradient(100deg, var(--lilac) 30%, var(--lilac-hi) 50%, var(--lilac) 70%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; filter: drop-shadow(0 0 6px oklch(0.72 0.15 305 / 40%)); animation: credit-shine 3.5s ease-in-out infinite, credit-glow 3.5s ease-in-out infinite; transition: filter 250ms ease, translate 250ms ease; }
+.bot-links a.credit:hover { animation: credit-shine 3.5s ease-in-out infinite; filter: drop-shadow(0 0 12px oklch(0.78 0.17 305 / 85%)); translate: 0 -1px; }
+@keyframes credit-shine { 0%, 100% { background-position: 220% 0; } 50% { background-position: 0 0; } }
+@keyframes credit-glow { 0%, 100% { filter: drop-shadow(0 0 4px oklch(0.72 0.15 305 / 30%)); } 50% { filter: drop-shadow(0 0 10px oklch(0.78 0.17 305 / 70%)); } }
+@media (prefers-reduced-motion: reduce) { .bot-links a.credit { animation: none; transition: none; } .bot-links a.credit:hover { translate: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.347-.347.52-.52.174-.174.232-.298.347-.497.115-.198.058-.372-.03-.52-.086-.15-.66-1.59-.905-2.178-.238-.571-.48-.494-.66-.503l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.073.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/></symbol>
+  </defs>
+</svg>
+
+<div class="welcome" id="welcome" aria-hidden="true">
+  <span class="w-mark"><svg><use href="#i-scissors"/></svg></span>
+  <span class="w-hello">Bem-vindo à</span>
+  <span class="display w-name"><span class="shimmer">NOVA ERA</span> <span>Barber</span></span>
+  <span class="w-bar"></span>
+</div>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a href="#inicio" class="brand" aria-label="Nova Era Barber, voltar ao início">
+      <span class="brand-mark"><svg width="19" height="19"><use href="#i-scissors"/></svg></span>
+      <span class="display brand-name"><span class="shimmer">NOVA ERA</span> <span>Barber</span></span>
+    </a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="#inicio">Início</a><a href="#servicos">Serviços</a><a href="#trabalhos">Trabalhos</a><a href="#sobre">Sobre</a><a href="#contato">Contato</a>
+    </nav>
+    <div class="top-cta"><button type="button" class="btn btn-gold" style="height:40px" data-book>Agendar horário <svg width="16" height="16"><use href="#i-arrow"/></svg></button></div>
+    <button type="button" class="btn btn-ghost btn-icon burger" id="burger" aria-label="Abrir menu" aria-expanded="false"><svg width="22" height="22"><use href="#i-menu"/></svg></button>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Navegação móvel">
+    <a href="#inicio">Início</a><a href="#servicos">Serviços</a><a href="#trabalhos">Trabalhos</a><a href="#sobre">Sobre</a><a href="#contato">Contato</a>
+  </nav>
+</header>
+
+<main id="inicio" class="wrap">
+  <div class="grid">
+    <div style="min-width:0">
+      <div class="hero-head">
+        <div class="hero-id">
+          <div class="hero-badge"><svg><use href="#i-scissors"/></svg></div>
+          <div style="min-width:0">
+            <span class="eyebrow" style="letter-spacing:0.18em">Bem-vindo à</span>
+            <h1 class="display"><span class="mask"><span class="word" style="--d:2.75s">Nova Era</span></span> <span class="mask"><span class="word shimmer" style="--d:2.9s">Barber</span></span></h1>
+            <p class="muted" style="margin-top:8px;font-size:14px">Tradição no cuidado. Atitude no estilo.</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-gold hero-cta" data-book>Agendar agora <svg width="16" height="16"><use href="#i-arrow"/></svg></button>
+      </div>
+
+      <div class="mosaic" role="img" aria-label="Interior da barbearia, corte de cabelo e ferramentas">
+        <div class="ph" style="--bg-ph: linear-gradient(135deg, oklch(0.24 0.012 70), oklch(0.17 0.006 70))"><span class="ph-tag">Interior da barbearia</span><svg><use href="#i-scissors"/></svg></div>
+        <div class="col">
+          <div class="ph" style="--bg-ph: linear-gradient(160deg, oklch(0.27 0.02 60), oklch(0.18 0.008 70))"><span class="ph-tag">Corte</span><svg><use href="#i-scissors"/></svg></div>
+          <div class="ph" style="--bg-ph: linear-gradient(200deg, oklch(0.22 0.01 75), oklch(0.16 0.005 70))"><span class="ph-tag">Ferramentas</span><svg><use href="#i-scissors"/></svg></div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <a href="#servicos" class="on">Serviços</a><a href="#trabalhos">Trabalhos</a><a href="#sobre">Sobre nós</a><a href="#contato">Contato</a>
+      </div>
+
+      <section id="sobre" class="blk">
+        <p class="eyebrow">Mais que um corte</p>
+        <h2 class="display">Um novo jeito de cuidar de você.</h2>
+        <p class="lead">Na Nova Era Barber, cada detalhe importa. Um espaço para desacelerar, renovar o visual e sair pronto para tudo o que vem pela frente.</p>
+      </section>
+
+      <section id="servicos" class="blk">
+        <div class="sec-head">
+          <div><p class="eyebrow">Escolha sua experiência</p><h2 class="display">Serviços</h2></div>
+          <span class="side">Seu estilo, do seu jeito.</span>
+        </div>
+        <div class="filters">
+          <label class="search"><svg width="17" height="17"><use href="#i-search"/></svg><input id="q" placeholder="Buscar serviço" aria-label="Buscar serviço"></label>
+          <select id="sort" class="sel" aria-label="Ordenar serviços"><option value="default">Ordenar: Padrão</option><option value="alpha">Ordenar: Nome</option></select>
+        </div>
+        <div class="svc-list" id="svcList"></div>
+        <p class="fine">Serviços e durações ilustrativos. Confirme disponibilidade e valores diretamente com a barbearia.</p>
+      </section>
+
+      <section id="trabalhos" class="blk">
+        <div class="sec-head">
+          <div><p class="eyebrow">Feitos na cadeira</p><h2 class="display">Trabalhos</h2></div>
+          <span class="side">Cortes reais, da nossa cadeira.</span>
+        </div>
+        <div class="gal" id="gal"></div>
+        <a class="insta" href="https://www.instagram.com/viegasbarbershop_gramado/" target="_blank" rel="noreferrer">@viegasbarbershop_gramado <svg width="14" height="14"><use href="#i-arrow"/></svg></a>
+      </section>
+    </div>
+
+    <aside id="contato" class="blk" style="scroll-margin-top:32px">
+      <div class="side-card">
+        <div class="info"><span class="chip"><svg><use href="#i-pin"/></svg></span><h2 class="display">Encontre a Nova Era</h2><p>Av. 1º de maio, 89 - Várzea Grande, Gramado.</p></div>
+        <div class="info"><span class="chip"><svg><use href="#i-clock"/></svg></span><h2 class="display">Horário de atendimento</h2><p>Consulte os horários disponíveis com a equipe.</p></div>
+        <div class="info"><span class="chip"><svg><use href="#i-cal"/></svg></span><h2 class="display">Seu próximo horário</h2><p>Escolha um serviço e envie seu pedido direto pelo WhatsApp.</p><button type="button" class="btn btn-wa btn-block" data-book>Agendar pelo WhatsApp <svg width="16" height="16"><use href="#i-arrow"/></svg></button></div>
+      </div>
+      <div class="quote"><p>Um visual à altura de quem você é.</p><svg><use href="#i-down"/></svg></div>
+    </aside>
+  </div>
+</main>
+
+<footer class="bot">
+  <div class="wrap bot-row">
+    <span class="display"><span class="shimmer">NOVA ERA</span> <span>Barber</span></span>
+    <span class="bot-links"><span>Nova Era Barber · Feito para o seu próximo capítulo.</span><a class="credit" href="https://www.instagram.com/neuracode2026/" target="_blank" rel="noreferrer">Criado por NeuraCode</a></span>
+  </div>
+</footer>
+
+<button type="button" class="btn btn-gold fab" id="fab" data-book aria-label="Agendar horário"><svg class="ico"><use href="#i-scissors"/></svg><span>Agendar horário</span></button>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <div class="dlg-head">
+      <div><p class="eyebrow">Nova Era</p><h2 class="display" id="dlgTitle">Agende seu horário</h2></div>
+      <button type="button" class="btn btn-ghost btn-icon" id="close" aria-label="Fechar"><svg width="20" height="20"><use href="#i-x"/></svg></button>
+    </div>
+    <p class="how">Escolha o serviço, dia e horário. Horários ocupados aparecem bloqueados. Ao confirmar, o horário fica reservado e o WhatsApp abre com sua mensagem pronta.</p>
+    <div class="form">
+      <label for="svc">Serviço<select id="svc" class="sel"></select></label>
+      <div class="two">
+        <label for="date">Dia de preferência<input type="date" id="date"></label>
+        <label for="time">Horário<select id="time" class="sel" disabled></select></label>
+      </div>
+    </div>
+    <p class="err" id="err" hidden></p>
+    <button type="button" class="btn btn-wa btn-block" id="confirm" disabled><svg width="16" height="16"><use href="#i-wa"/></svg><span id="confirmLabel">Reservar e enviar no WhatsApp</span></button>
+    <div class="done" id="done" hidden>
+      <span id="doneMsg"></span>
+      <a class="btn btn-wa btn-block" id="waLink" href="#" target="_blank" rel="noreferrer"><svg width="16" height="16"><use href="#i-wa"/></svg>Abrir WhatsApp com a mensagem</a>
+    </div>
+    <p class="demo">Versão de demonstração: as reservas ficam salvas só neste navegador e alguns horários aparecem ocupados como exemplo.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var w = document.getElementById("welcome");
+  if (w) {
+    var hide = function () { w.hidden = true; };
+    w.addEventListener("click", hide);
+    setTimeout(hide, 3000);
+  }
+})();
+(function () {
+  var WA = "5551999702759";
+  var services = [
+    { name: "Corte de cabelo", desc: "Um corte pensado para o seu estilo.", n: "01", dur: "30 min" },
+    { name: "Barba", desc: "Cuidado e acabamento em cada detalhe.", n: "02", dur: "30 min" },
+    { name: "Corte + barba", desc: "A experiência completa em uma visita.", n: "03", dur: "60 min" },
+    { name: "Sobrancelha", desc: "O toque final para o visual.", n: "04", dur: "20 min" },
+    { name: "Acabamento", desc: "Detalhes que fazem a diferença.", n: "05", dur: "20 min" },
+    { name: "Corte + sobrancelha", desc: "Visual renovado, do começo ao fim.", n: "06", dur: "45 min" }
+  ];
+  var works = [
+    ["Degradê com desenho", "oklch(0.26 0.015 65)"], ["Cachos e degradê", "oklch(0.23 0.01 75)"],
+    ["Degradê e barba", "oklch(0.25 0.018 55)"], ["Corte clássico", "oklch(0.22 0.008 70)"],
+    ["Estilo com desenho", "oklch(0.27 0.012 80)"], ["Topete e degradê", "oklch(0.24 0.014 60)"]
+  ];
+  var SLOTS = [];
+  for (var i = 0; i < 22; i++) { var m = 9 * 60 + i * 30; SLOTS.push(("0" + Math.floor(m / 60)).slice(-2) + ":" + ("0" + (m % 60)).slice(-2)); }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  /* Serviços */
+  var q = $("q"), sortEl = $("sort"), list = $("svcList");
+  function renderServices() {
+    var term = q.value.toLocaleLowerCase("pt-BR");
+    var rows = services.filter(function (s) { return s.name.toLocaleLowerCase("pt-BR").indexOf(term) !== -1; });
+    if (sortEl.value === "alpha") rows.sort(function (a, b) { return a.name.localeCompare(b.name, "pt-BR"); });
+    if (!rows.length) { list.innerHTML = '<p class="empty">Nenhum serviço encontrado.</p>'; return; }
+    list.innerHTML = rows.map(function (s) {
+      return '<div class="svc"><div class="svc-n">' + s.n + '</div><div class="svc-t"><h3>' + esc(s.name) + '</h3><p>' + esc(s.desc) + '</p></div>' +
+        '<div class="svc-r"><span class="dur"><svg width="13" height="13"><use href="#i-clock"/></svg> ' + s.dur + ' estimados</span>' +
+        '<button type="button" class="btn btn-outline btn-sm" data-service="' + esc(s.name) + '">Consultar <svg width="14" height="14"><use href="#i-arrow"/></svg></button></div></div>';
+    }).join("");
+  }
+  q.addEventListener("input", renderServices);
+  sortEl.addEventListener("change", renderServices);
+  renderServices();
+
+  /* Galeria */
+  $("gal").innerHTML = works.map(function (w) {
+    return '<figure><div class="ph" style="--bg-ph:' + w[1] + '"><span class="ph-tag">Foto</span><svg><use href="#i-scissors"/></svg></div><figcaption>' + esc(w[0]) + '</figcaption></figure>';
+  }).join("");
+
+  /* Menu móvel */
+  var burger = $("burger"), mnav = $("mnav");
+  burger.addEventListener("click", function () {
+    var open = mnav.classList.toggle("open");
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+    burger.querySelector("use").setAttribute("href", open ? "#i-x" : "#i-menu");
+  });
+  mnav.addEventListener("click", function (e) { if (e.target.tagName === "A") burger.click(); });
+
+  /* Agendamento */
+  var scrim = $("scrim"), svcEl = $("svc"), dateEl = $("date"), timeEl = $("time"), errEl = $("err"),
+      confirmEl = $("confirm"), doneEl = $("done"), fab = $("fab"), lastFocus = null;
+  svcEl.innerHTML = services.map(function (s) { return "<option>" + esc(s.name) + "</option>"; }).join("");
+
+  function today() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  dateEl.min = today();
+
+  function stored() { try { return JSON.parse(localStorage.getItem("ne-bookings") || "{}"); } catch (e) { return {}; } }
+  function saveBooking(day, t) {
+    try { var b = stored(); (b[day] = b[day] || []).push(t); localStorage.setItem("ne-bookings", JSON.stringify(b)); } catch (e) {}
+  }
+  function sample(day) { /* horários ocupados de exemplo, estáveis por data */
+    var h = 0; for (var i = 0; i < day.length; i++) h = (h * 31 + day.charCodeAt(i)) >>> 0;
+    var out = []; for (var k = 0; k < 6; k++) { h = (h * 1103515245 + 12345) >>> 0; out.push(SLOTS[h % SLOTS.length]); }
+    return out;
+  }
+  function taken(day) { return sample(day).concat(stored()[day] || []); }
+
+  function fillTimes() {
+    var day = dateEl.value, busy = day ? taken(day) : [];
+    timeEl.disabled = !day;
+    timeEl.innerHTML = '<option value="">' + (day ? "Escolha" : "Escolha o dia") + "</option>" + SLOTS.map(function (s) {
+      var t = busy.indexOf(s) !== -1; return '<option value="' + s + '"' + (t ? " disabled" : "") + ">" + s + (t ? " — ocupado" : "") + "</option>";
+    }).join("");
+    sync();
+  }
+  function sync() { confirmEl.disabled = !(dateEl.value && timeEl.value); }
+  function waUrl() {
+    var d = dateEl.value ? " no dia " + dateEl.value.split("-").reverse().join("/") : "";
+    var t = timeEl.value ? " às " + timeEl.value : "";
+    return "https://wa.me/" + WA + "?text=" + encodeURIComponent("Olá, Nova Era Barber! Gostaria de agendar um horário para " + svcEl.value + d + t + ".");
+  }
+  function openBooking(service) {
+    lastFocus = document.activeElement;
+    if (service) svcEl.value = service;
+    errEl.hidden = true; doneEl.hidden = true; confirmEl.hidden = false;
+    fillTimes();
+    scrim.hidden = false; fab.hidden = true;
+    document.documentElement.style.overflow = "hidden";
+    $("close").focus();
+  }
+  function closeBooking() {
+    scrim.hidden = true; fab.hidden = false;
+    document.documentElement.style.overflow = "";
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  dateEl.addEventListener("change", function () { errEl.hidden = true; fillTimes(); });
+  timeEl.addEventListener("change", sync);
+  confirmEl.addEventListener("click", function () {
+    var day = dateEl.value, t = timeEl.value;
+    if (!day || !t) return;
+    if (taken(day).indexOf(t) !== -1) { errEl.textContent = "Esse horário já está reservado. Escolha outro horário."; errEl.hidden = false; fillTimes(); return; }
+    saveBooking(day, t);
+    var link = waUrl();
+    $("waLink").href = link;
+    $("doneMsg").textContent = "Horário reservado: " + svcEl.value + ", " + day.split("-").reverse().join("/") + " às " + t + ". Toque abaixo para enviar a mensagem pelo WhatsApp.";
+    doneEl.hidden = false; confirmEl.hidden = true;
+    fillTimes();
+  });
+  $("close").addEventListener("click", closeBooking);
+  scrim.addEventListener("mousedown", function (e) { if (e.target === scrim) closeBooking(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !scrim.hidden) closeBooking(); });
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-book], [data-service]");
+    if (!b) return;
+    openBooking(b.getAttribute("data-service") || "Corte de cabelo");
+  });
+})();
+</script>
